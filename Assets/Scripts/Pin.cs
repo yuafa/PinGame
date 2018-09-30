@@ -12,6 +12,14 @@ public class Pin : MonoBehaviour
 
     private bool isReach = false;
 
+    private void Start()
+    {
+        if (GameMode.instance.mode == Mode.Auto)
+        {
+            GetComponentInChildren<SphereCollider>().enabled = false;
+        }
+    }
+
     private void Update()
     {
         if (isReach) return;
@@ -30,10 +38,10 @@ public class Pin : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.CompareTag("Pin"))
-        //{
-        //    GameManager.instance.GameOver();
-        //}
+        if (other.CompareTag("Pin"))
+        {
+            GameManager.instance.GameOver();
+        }
     }
 
 }

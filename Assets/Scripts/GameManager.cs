@@ -20,21 +20,53 @@ public class GameManager : MonoBehaviour
 
     private bool isGameOver = false;
 
+    private float timer = 0f;
+
+    private bool isNormalGame = true;
+
     private void Awake()
     {
         instance = this;
         mainCamera = Camera.main;
-        InvokeRepeating("SpawnPin", 1f, 0.1f);
+        //InvokeRepeating("SpawnPin", 1f, 0.1f);
+    }
+
+    private void Start()
+    {
+        if (GameMode.instance.mode == Mode.Normal)
+        {
+            isNormalGame = true;
+        }
+        else
+        {
+            isNormalGame = false;
+        }
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("01Main");
+        }
 
         if (isGameOver) return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (isNormalGame == true)
         {
-            SpawnPin();
+            if (Input.GetMouseButtonDown(0))
+            {
+                SpawnPin();
+            }
+        }
+        else
+        {
+            if (timer >= 0.1f)
+            {
+                timer = 0f;
+                SpawnPin();
+            }
+            timer += Time.deltaTime;
         }
     }
 
@@ -42,6 +74,11 @@ public class GameManager : MonoBehaviour
     {
         score++;
         scoreText.text = score.ToString();
+
+        if (score == 1000)
+        {
+            GameOver();
+        }
     }
 
     private void SpawnPin()
@@ -54,11 +91,8 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         if (isGameOver) return;
-
-        StartCoroutine(StartGameOver());
-
         isGameOver = true;
-        target.GetComponent<RotateSelf>().enabled = false;
+        StartCoroutine(StartGameOver());
     }
 
     private IEnumerator StartGameOver()
@@ -66,7 +100,6 @@ public class GameManager : MonoBehaviour
 
         while (true)
         {
-
             mainCamera.backgroundColor = Color.Lerp(mainCamera.backgroundColor, Color.red, Time.deltaTime);
 
             mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, 4f, Time.deltaTime);
@@ -78,9 +111,6 @@ public class GameManager : MonoBehaviour
 
             yield return null;
         }
-
-        yield return new WaitForSeconds(0.2f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 }

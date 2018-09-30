@@ -15,7 +15,14 @@ public class RotateSelf : MonoBehaviour
 
     private void Update()
     {
-        transform.Rotate(rotateSpeed * Time.deltaTime);
+        if (GameMode.instance.mode == Mode.Auto)
+        {
+            transform.Rotate(rotateSpeed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Rotate(new Vector3(0, 0, 90) * Time.deltaTime);
+        }
     }
 
 
