@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    public Color[] colors;
+
     public Transform target;
     public Transform spawnPoint;
     public GameObject pinPrefab;
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour
         score++;
         scoreText.text = score.ToString();
 
-        if (score == 1000)
+        if (score == 996)
         {
             GameOver();
         }
@@ -92,19 +94,23 @@ public class GameManager : MonoBehaviour
     {
         if (isGameOver) return;
         isGameOver = true;
-        StartCoroutine(StartGameOver());
+        if (isNormalGame == true)
+        {
+            StartCoroutine(StartGameOver());
+        }
     }
 
     private IEnumerator StartGameOver()
     {
+        Color tempColor = colors[Random.Range(0, colors.Length)];
 
         while (true)
         {
-            mainCamera.backgroundColor = Color.Lerp(mainCamera.backgroundColor, Color.red, Time.deltaTime);
+            mainCamera.backgroundColor = Color.Lerp(mainCamera.backgroundColor, tempColor, Time.deltaTime);
 
-            mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, 4f, Time.deltaTime);
+            mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 45f, Time.deltaTime);
 
-            if (Mathf.Abs(mainCamera.orthographicSize - 4f) < 0.1f)
+            if (Mathf.Abs(mainCamera.fieldOfView - 45f) < 0.1f)
             {
                 break;
             }
